@@ -1,0 +1,54 @@
+<script lang="ts" setup>
+defineEmits(["close"]);
+</script>
+
+<template>
+    <div class="delete__password d-flex flex-column align-items-center w-100 position-relative">
+        <h3 class="delete__password-text weight-400">Are you sure you want to delete this password?</h3>
+
+        <div class="delete__password-btns d-flex align-items-center">
+            <button class="delete__password-btns-delete">Delete</button>
+            <button class="delete__password-btns-cancel" @click="$emit('close')">Cancel</button>
+        </div>
+    </div>
+</template>
+
+<style scoped lang="scss">
+.delete__password {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    &-text {
+        @include font(1.5rem, 1.8rem);
+        color: $col-black;
+        margin-bottom: 3rem;
+    }
+
+    &-btns {
+        gap: 3rem;
+
+        button {
+            width: 13.5rem;
+            @include font(1.2rem, 1.6rem);
+            border-radius: 0.5rem;
+            padding: 1rem 2rem;
+        }
+
+        &-delete {
+            color: $col-white;
+            background-color: $col-bluePurple;
+            transition: all 0.2s ease-in-out;
+
+            &:hover {
+                opacity: 0.8;
+            }
+        }
+
+        &-cancel {
+            color: $col-fadedBlack;
+            background-color: $col-lightGrey;
+        }
+    }
+}
+</style>
