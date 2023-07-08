@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-
+defineEmits(["toggle-add-modal"]);
 </script>
 
 <template>
@@ -11,7 +11,7 @@
             </label>
         </form>
 
-        <button class="weight-600 d-flex align-items-center justify-content-center">
+        <button class="weight-600 d-flex align-items-center justify-content-center" @click="$emit('toggle-add-modal')">
             <IconAdd />
             Add New
         </button>

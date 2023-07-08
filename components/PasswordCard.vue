@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+defineEmits(["toggle-delete-modal", "toggle-edit-modal"]);
+
 const passwords = [
     { id: 1, brand: "Netflix", brandImage: "https://i.ibb.co/Sy0SDTL/netflix.png", email: "johndoe@gmail.com", password: "***********", website: "https://www.netflix.com" },
     { id: 2, brand: "HBO Max", brandImage: "https://i.ibb.co/W3w6rNs/hbo.png", email: "johndoe@gmail.com", password: "***********", website: "https://www.hbomax.com" },
@@ -9,8 +11,10 @@ const passwords = [
 
 const selectedPassword = ref(0);
 const accountOpened = ref(false);
+const showPassword = ref(false);
 
 const toggleAccount = (id: number) => {
+    showPassword.value = false;
     selectedPassword.value = (selectedPassword.value === id) ? 0 : id;
     accountOpened.value = (selectedPassword.value !== 0);
 };
@@ -24,11 +28,18 @@ const copyToClipboard = async (text: string) => {
         alert("Failed to copy!");
     }
 };
+
+// toggle password visibility for selected account
+const togglePasswordVisibility = (id: number) => {
+    if (selectedPassword.value === id) {
+        showPassword.value = !showPassword.value;
+    }
+};
 </script>
 
 <template>
     <div class="passwords d-flex flex-column w-100">
-        <div v-for="password in passwords" class="passwords__card">
+        <div v-for="password in passwords" class="passwords__card position-relative">
             <div class="account d-flex align-items-center justify-content-space-between"
                 @click="toggleAccount(password.id)">
                 <div class="account__info d-flex align-items-center">
@@ -42,29 +53,41 @@ const copyToClipboard = async (text: string) => {
 
             <!-- account password info -->
             <div v-show="accountOpened && selectedPassword === password.id" class="passwords__card-body">
-                <button class="edit d-flex align-items-center justify-content-center weight-400">Edit</button>
+                <button class="edit d-flex align-items-center justify-content-center weight-400"
+                    @click="$emit('toggle-edit-modal')">Edit</button>
 
                 <ul class="passwords__card-body-content w-100 d-flex flex-column">
-                    <button
-                        class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between"
-                        @click="copyToClipboard(password.email)">
+                    <div class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between">
                         <span class="weight-500">Email: {{ password.email }}</span>
-                        <IconCopy />
-                    </button>
+                        <button @click="copyToClipboard(password.email)">
+                            <IconCopy />
+                        </button>
+                    </div>
 
-                    <button
-                        class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between" @click="copyToClipboard(password.password)">
-                        <span class="weight-500">Password: {{ password.password }}</span>
-                        <IconCopy />
-                    </button>
+                    <div class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between">
+                        <div class="d-flex align-items-center" style="gap: 1rem;">
+                            <span class="weight-500">Password: {{ password.password }}</span>
+                            <button @click="togglePasswordVisibility(password.id)">
+                                <IconVisibility :visibility="showPassword ? 'hidden' : 'show'" />
+                            </button>
+                        </div>
+                        <button @click="copyToClipboard(password.password)">
+                            <IconCopy />
+                        </button>
+                    </div>
 
                     <a :href="password.website" target="_blank"
                         class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between">
                         <span class="weight-500">Website: {{ password.website }}</span>
-                        <IconArrow />
+                        <IconArrow direction="up" />
                     </a>
                 </ul>
             </div>
+
+            <!-- remove password -->
+            <button class="position-absolute remove" @click="$emit('toggle-delete-modal')">
+                <IconRemove />
+            </button>
         </div>
     </div>
 </template>
@@ -139,5 +162,10 @@ const copyToClipboard = async (text: string) => {
             }
         }
     }
+}
+
+.remove {
+    right: -3rem;
+    top: 1.5rem;
 }
 </style>

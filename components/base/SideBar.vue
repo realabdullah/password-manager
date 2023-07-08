@@ -52,6 +52,18 @@ const categories = [
         &-item {
             button {
                 padding-left: 2rem;
+                transition: background-color 0.2s ease-in-out;
+
+                &:hover {
+                    background-color: $col-bluePurple;
+                    border-radius: 0.6rem;
+                }
+
+                &:hover .category,
+                &:hover .count {
+                    background-color: $col-bluePurple;
+                    color: $col-white;
+                }
 
                 @media screen and (max-width: 950px) {
                     padding-left: 0;
@@ -60,11 +72,6 @@ const categories = [
                 .category {
                     @include font(1.4rem, 2rem);
                     color: $col-black;
-                    transition: color 0.2s ease-in-out;
-
-                    &:hover {
-                        color: $col-fadedBlack;
-                    }
                 }
 
                 .count {
