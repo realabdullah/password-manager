@@ -1,5 +1,23 @@
 <script lang="ts" setup>
+const showDeleteModal = ref(false);
+const showAddEditModal = ref(false);
+const mode = ref("");
 
+const toggleDeleteModal = () => {
+    mode.value = (showDeleteModal.value) ? "" : "delete";
+    showDeleteModal.value = !showDeleteModal.value;
+};
+
+const toggleAddEditModal = (action: string) => {
+    mode.value = (action === "add") ? "add" : (action === "edit") ? "edit" : "";
+    showAddEditModal.value = !(showAddEditModal.value && action === "");
+};
+
+const closeModals = () => {
+    mode.value = "";
+    showDeleteModal.value = false;
+    showAddEditModal.value = false;
+};
 </script>
 
 <template>
@@ -9,11 +27,17 @@
             <BaseSideBar />
 
             <div class="container__content">
-                <PageAction />
-                <PasswordCard />
+                <PageAction @toggle-add-modal="toggleAddEditModal('add')" />
+                <PasswordCard @toggle-delete-modal="toggleDeleteModal" @toggle-edit-modal="toggleAddEditModal('edit')" />
             </div>
         </div>
     </div>
+
+    <BaseModal v-if="showAddEditModal || showDeleteModal" :width="mode === 'delete' ? '50rem' : '70rem'"
+        :height="mode === 'delete' ? '20rem' : '60rem'" @close="closeModals">
+        <AddPassword v-if="mode === 'add' || mode === 'edit'" :mode="mode" />
+        <DeletePassword v-if="mode === 'delete'" @close="closeModals" />
+    </BaseModal>
 </template>
 
 <style scoped lang="scss">
@@ -42,10 +66,12 @@
 
             @media screen and (max-width: 768px) {
                 padding: 2.4rem;
+                padding-right: 6rem;
             }
 
             @media screen and (min-width: 769px) and (max-width: 950px) {
                 padding: 3.4rem;
+                padding-right: 6rem;
             }
         }
     }

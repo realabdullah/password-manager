@@ -1,16 +1,27 @@
 <script lang="ts" setup>
-
+const showMenu = ref(false);
 </script>
 
 <template>
-    <header class="d-flex align-items-center justify-content-space-between">
+    <header class="d-flex align-items-center justify-content-space-between position-relative">
         <IconLogo class="logo" />
 
-        <button class="account d-flex align-items-center">
+        <button class="account d-flex align-items-center" @click="showMenu = !showMenu">
             <img src="/assets/images/avatar.png" alt="avatar">
             <span class="weight-400">Johndoe@gmail.com</span>
-            <IconCaret direction="down" />
+            <IconCaret :direction="showMenu ? 'up' : 'down'" />
         </button>
+
+        <div v-show="showMenu" class="dropdown position-absolute d-flex flex-column align-items-start">
+            <button class="d-flex align-items-center">
+                <IconDropdown type="password" />
+                Change Password
+            </button>
+            <button class="d-flex align-items-center">
+                <IconDropdown type="logout" />
+                Sign Out
+            </button>
+        </div>
     </header>
 </template>
 
@@ -52,6 +63,38 @@ header {
         span {
             @include font(1.2rem, 2rem);
             color: $col-darkGrey;
+        }
+    }
+
+    .dropdown {
+        top: 9rem;
+        right: 6rem;
+        width: 22rem;
+        padding: 2rem;
+        background-color: $col-white;
+        border-radius: 1.1rem;
+        box-shadow: #64646f33 0px 7px 29px 0px;
+        z-index: 9999999;
+        gap: 2rem;
+
+        @media screen and (max-width: 768px) {
+            right: 2.4rem;
+        }
+
+        @media screen and (min-width: 769px) and (max-width: 950px) {
+            right: 3.4rem;
+        }
+
+        button {
+            @include font(1.6rem, 3.3rem);
+            font-weight: 400;
+            gap: 1.2rem;
+            color: $col-black;
+            transition: color 0.3s ease-in-out;
+
+            &:hover {
+                color: $col-fadedBlack;
+            }
         }
     }
 }
