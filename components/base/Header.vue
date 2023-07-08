@@ -4,9 +4,7 @@
 
 <template>
     <header class="d-flex align-items-center justify-content-space-between">
-        <div class="logo">
-            <IconLogo />
-        </div>
+        <IconLogo class="logo" />
 
         <button class="account d-flex align-items-center">
             <img src="/assets/images/avatar.png" alt="avatar">
@@ -22,8 +20,24 @@ header {
     background-color: $col-white;
     border-bottom: 0.1rem solid $col-grey;
 
+    @media screen and (max-width: 768px) {
+        padding: 2.2rem 2.4rem;
+    }
+
+    @media screen and (min-width: 769px) and (max-width: 950px) {
+        padding: 2.2rem 3.4rem;
+    }
+
     .logo {
         width: 22.8rem;
+
+        @media screen and (max-width: 423px) {
+            width: 10rem;
+        }
+
+        @media screen and (min-width: 423px) and (max-width: 485px) {
+            width: 18rem;
+        }
     }
 
     .account {

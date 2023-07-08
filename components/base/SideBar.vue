@@ -31,6 +31,15 @@ const categories = [
     border-right: 0.1rem solid $col-grey;
     overflow-y: auto;
 
+    @media screen and (max-width: 768px) {
+        display: none;
+    }
+
+    @media screen and (max-width: 950px) {
+        width: 25rem;
+        padding: 3.4rem;
+    }
+
     &__title {
         @include font(1.4rem, 2rem);
         color: $col-lightBlack;
@@ -43,6 +52,10 @@ const categories = [
         &-item {
             button {
                 padding-left: 2rem;
+
+                @media screen and (max-width: 950px) {
+                    padding-left: 0;
+                }
 
                 .category {
                     @include font(1.4rem, 2rem);

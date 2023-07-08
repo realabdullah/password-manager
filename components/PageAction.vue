@@ -22,6 +22,15 @@
 .page__actions {
     margin-bottom: 3.4rem;
 
+    @media screen and (max-width: 768px) {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    @media screen and (max-width: 950px) {
+        gap: 1rem;
+    }
+
     form {
         position: relative;
         width: 35rem;
@@ -29,6 +38,10 @@
         border-radius: 0.8rem;
         background-color: $col-lightGrey;
         padding: 0 1.3rem;
+
+        @media screen and (max-width: 768px) {
+            width: 100%;
+        }
 
         input {
             width: 100%;
@@ -57,6 +70,10 @@
         @include font(1.4rem, 2rem);
         gap: 0.8rem;
         transition: opacity 0.2s ease-in-out;
+
+        @media screen and (max-width: 768px) {
+            align-self: flex-end;
+        }
 
         &:hover {
             opacity: 0.8;
