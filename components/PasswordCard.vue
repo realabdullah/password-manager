@@ -14,6 +14,16 @@ const toggleAccount = (id: number) => {
     selectedPassword.value = (selectedPassword.value === id) ? 0 : id;
     accountOpened.value = (selectedPassword.value !== 0);
 };
+
+// copy to clipboard
+const copyToClipboard = async (text: string) => {
+    try {
+        await navigator.clipboard.writeText(text);
+        alert("Copied to clipboard!");
+    } catch {
+        alert("Failed to copy!");
+    }
+};
 </script>
 
 <template>
@@ -36,13 +46,14 @@ const toggleAccount = (id: number) => {
 
                 <ul class="passwords__card-body-content w-100 d-flex flex-column">
                     <button
-                        class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between">
+                        class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between"
+                        @click="copyToClipboard(password.email)">
                         <span class="weight-500">Email: {{ password.email }}</span>
                         <IconCopy />
                     </button>
 
                     <button
-                        class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between">
+                        class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between" @click="copyToClipboard(password.password)">
                         <span class="weight-500">Password: {{ password.password }}</span>
                         <IconCopy />
                     </button>
