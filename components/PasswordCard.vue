@@ -23,9 +23,9 @@ const toggleAccount = (id: number) => {
 const copyToClipboard = async (text: string) => {
     try {
         await navigator.clipboard.writeText(text);
-        alert("Copied to clipboard!");
+        useEvent("showToast", "Copied to clipboard!");
     } catch {
-        alert("Failed to copy!");
+        useEvent("showToast", "Failed to copy to clipboard!");
     }
 };
 

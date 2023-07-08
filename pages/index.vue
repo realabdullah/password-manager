@@ -2,6 +2,8 @@
 const showDeleteModal = ref(false);
 const showAddEditModal = ref(false);
 const mode = ref("");
+const showToast = ref(false);
+const toastMessage = ref("");
 
 const toggleDeleteModal = () => {
     mode.value = (showDeleteModal.value) ? "" : "delete";
@@ -18,6 +20,15 @@ const closeModals = () => {
     showDeleteModal.value = false;
     showAddEditModal.value = false;
 };
+
+useListen("showToast", (message: string) => {
+    showToast.value = true;
+    toastMessage.value = message;
+    setTimeout(() => {
+        showToast.value = false;
+        toastMessage.value = "";
+    }, 3000);
+});
 </script>
 
 <template>
@@ -33,11 +44,15 @@ const closeModals = () => {
         </div>
     </div>
 
+    <!-- ADD, EDIT, DELETE MODAL -->
     <BaseModal v-if="showAddEditModal || showDeleteModal" :width="mode === 'delete' ? '50rem' : '70rem'"
         :height="mode === 'delete' ? '20rem' : '60rem'" @close="closeModals">
         <AddPassword v-if="mode === 'add' || mode === 'edit'" :mode="mode" />
         <DeletePassword v-if="mode === 'delete'" @close="closeModals" />
     </BaseModal>
+
+    <!-- TOAST NOTIFICATION -->
+    <BaseToast v-if="showToast" :message="toastMessage" />
 </template>
 
 <style scoped lang="scss">

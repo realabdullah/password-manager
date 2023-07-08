@@ -1,5 +1,9 @@
 <script lang="ts" setup>
 defineEmits(["close"]);
+
+const deletePassword = () => {
+    useEvent("showToast", "Password deleted successfully!");
+};
 </script>
 
 <template>
@@ -7,7 +11,7 @@ defineEmits(["close"]);
         <h3 class="delete__password-text weight-400">Are you sure you want to delete this password?</h3>
 
         <div class="delete__password-btns d-flex align-items-center">
-            <button class="delete__password-btns-delete">Delete</button>
+            <button class="delete__password-btns-delete" @click="deletePassword">Delete</button>
             <button class="delete__password-btns-cancel" @click="$emit('close')">Cancel</button>
         </div>
     </div>

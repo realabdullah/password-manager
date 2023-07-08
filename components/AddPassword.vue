@@ -4,6 +4,16 @@ interface Props {
 }
 
 defineProps<Props>();
+
+const saveChanges = () => {
+    const website = document.getElementById("website") as HTMLInputElement;
+    const email = document.getElementById("email") as HTMLInputElement;
+    const password = document.getElementById("password") as HTMLInputElement;
+
+    if (website.value === "" || email.value === "" || password.value === "") {
+        useEvent("showToast", "Please fill in all fields!");
+    }
+};
 </script>
 
 <template>
@@ -11,7 +21,7 @@ defineProps<Props>();
         <h1 class="add__password-header weight-600 text-center">{{ mode === "edit" ? "Edit Password" : "Add a New Password"
         }}</h1>
 
-        <form class="add__password-form w-100 d-flex flex-column">
+        <form class="add__password-form w-100 d-flex flex-column" @submit.prevent="saveChanges">
             <label for="website" class="add__password-form-label w-100 d-flex flex-column">
                 <span class="weight-400">Website</span>
                 <input type="text" id="website" class="add__password-form-input" />
