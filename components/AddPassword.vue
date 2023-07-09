@@ -1,19 +1,56 @@
 <script lang="ts" setup>
 interface Props {
     mode: string;
+    passwordToEdit: Password;
+    categories: Category[];
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
+const emits = defineEmits(["close"]);
+
+const name = ref("");
+const email = ref("");
+const password = ref("");
+const website = ref("");
+const category = ref("");
+
+let addPassword: (password: Password) => void;
+let editPassword: (password: Password) => void;
 
 const saveChanges = () => {
-    const website = document.getElementById("website") as HTMLInputElement;
-    const email = document.getElementById("email") as HTMLInputElement;
-    const password = document.getElementById("password") as HTMLInputElement;
-
-    if (website.value === "" || email.value === "" || password.value === "") {
+    if (website.value === "" || email.value === "" || password.value === "" || name.value === "") {
         useEvent("showToast", "Please fill in all fields!");
+        return;
     }
+
+    const passwordObj: Password = {
+        id: props.mode === "edit" ? props.passwordToEdit.id : window.crypto.randomUUID(),
+        name: name.value,
+        website: website.value,
+        email: email.value,
+        password: password.value,
+        category: category.value,
+        image: 'https://ui-avatars.com/api/?name=' + name.value,
+        createdAt: props.mode === "edit" ? props.passwordToEdit.createdAt : new Date().toLocaleDateString(),
+    };
+
+    props.mode === "edit" ? editPassword(passwordObj) : addPassword(passwordObj);
+    emits("close");
+    useEvent("showToast", `Password successfully ${props.mode === "edit" ? "edited" : "added"}!`);
 };
+
+if (props.mode === "edit") {
+    name.value = props.passwordToEdit.name;
+    website.value = props.passwordToEdit.website;
+    email.value = props.passwordToEdit.email;
+    password.value = props.passwordToEdit.password;
+    category.value = props.passwordToEdit.category;
+}
+
+onMounted(() => {
+    addPassword = usePassword().addPassword;
+    editPassword = usePassword().editPassword;
+});
 </script>
 
 <template>
@@ -22,10 +59,12 @@ const saveChanges = () => {
         }}</h1>
 
         <form class="add__password-form w-100 d-flex flex-column" @submit.prevent="saveChanges">
-            <BaseText for="website" label="Website" type="text" placeholder="https://example.com" />
-            <BaseText for="email" label="Email" type="email" placeholder="johndoe@gmail.com" />
-            <BaseText for="password" label="Password" type="password" placeholder="********************" />
-            <BaseSelect for="category" label="Category" :values="['Social', 'Work', 'Finance', 'Other']" />
+            <BaseText v-model="name" for="name" label="Account Name" type="text" placeholder="Netflix" />
+            <BaseText v-model="website" for="website" label="Website" type="text" placeholder="https://example.com" />
+            <BaseText v-model="email" for="email" label="Email" type="email" placeholder="johndoe@gmail.com" />
+            <BaseText v-model="password" for="password" label="Password" type="password"
+                placeholder="********************" />
+            <BaseSelect v-model="category" for="category" label="Category" :values="categories" />
 
             <button class="add__password-form-btn">
                 {{ mode === "edit" ? "Edit Password" : "Add Password" }}

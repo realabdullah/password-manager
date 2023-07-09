@@ -2,17 +2,24 @@
 interface Props {
     for: string;
     label: string;
-    values: string[];
+    values: Category[];
+    modelValue: string
+}
+
+interface Emits {
+    (event: "update:modelValue", value: string): void;
 }
 
 defineProps<Props>();
+defineEmits<Emits>();
 </script>
 
 <template>
-    <label :for="for" class="w-100 d-flex flex-column">
+    <label class="w-100 d-flex flex-column" :for="for">
         <span>{{ label }}</span>
-        <select :id="for" class="add__password-form-input">
-            <option v-for="value in values" :value="value">{{ value }}</option>
+        <select class="add__password-form-input" :id="for" @change="$emit('update:modelValue', ($event.target as HTMLSelectElement).value)">
+            <option value="" disabled selected>Select a category</option>
+            <option v-for="value in values" :value="value.title" :selected="value.title === modelValue">{{ value.title }}</option>
         </select>
     </label>
 </template>

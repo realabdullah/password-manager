@@ -1,9 +1,21 @@
 <script lang="ts" setup>
-defineEmits(["close"]);
+const props = defineProps<{
+    id: string;
+}>();
 
-const deletePassword = () => {
+const emits = defineEmits(["close"]);
+
+let deletePassword: (id: string) => void;
+
+const removePassword = () => {
+    deletePassword(props.id);
     useEvent("showToast", "Password deleted successfully!");
+    emits("close");
 };
+
+onMounted(() => {
+    deletePassword = usePassword().deletePassword;
+})
 </script>
 
 <template>
@@ -11,7 +23,7 @@ const deletePassword = () => {
         <h3 class="delete__password-text weight-400">Are you sure you want to delete this password?</h3>
 
         <div class="delete__password-btns d-flex align-items-center">
-            <button class="delete__password-btns-delete" @click="deletePassword">Delete</button>
+            <button class="delete__password-btns-delete" @click="removePassword">Delete</button>
             <button class="delete__password-btns-cancel" @click="$emit('close')">Cancel</button>
         </div>
     </div>

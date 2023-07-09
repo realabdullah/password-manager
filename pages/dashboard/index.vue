@@ -2,33 +2,57 @@
 const showDeleteModal = ref(false);
 const showAddEditModal = ref(false);
 const mode = ref("");
+const passwordToEdit = ref<Password>({} as Password);
+const passwordToDeleteId = ref("");
+const passwords = ref<Password[]>([]);
+const categories = ref<Category[]>([]);
 
-const toggleDeleteModal = () => {
+const toggleDeleteModal = async (id: string) => {
+    passwordToDeleteId.value = id;
     mode.value = (showDeleteModal.value) ? "" : "delete";
     showDeleteModal.value = !showDeleteModal.value;
 };
 
-const toggleAddEditModal = (action: string) => {
+const toggleAddEditModal = async (action: string, passwordObj?: Password) => {
+    if (passwordObj) passwordToEdit.value = passwordObj;
     mode.value = (action === "add") ? "add" : (action === "edit") ? "edit" : "";
     showAddEditModal.value = !(showAddEditModal.value && action === "");
 };
 
-const closeModals = () => {
+const closeModals = async () => {
     mode.value = "";
     showDeleteModal.value = false;
     showAddEditModal.value = false;
+    refresh();
 };
+
+let getAllPasswords: () => Promise<Password[]>;
+let getAllCategories: () => Promise<Category[]>;
+
+const refresh = async () => {
+    passwords.value = await getAllPasswords();
+    categories.value = await getAllCategories();
+};
+
+onMounted(async () => {
+    getAllPasswords = usePassword().getPasswords;
+    getAllCategories = usePassword().getCategories;
+    passwords.value = await getAllPasswords();
+    categories.value = await getAllCategories();
+});
 </script>
 
 <template>
     <div class="main">
         <BaseHeader />
         <div class="container">
-            <BaseSideBar />
+            <BaseSideBar :categories="categories" :passwords="passwords" @refresh="refresh" />
 
             <div class="container__content">
                 <PageAction @toggle-add-modal="toggleAddEditModal('add')" />
-                <PasswordCard @toggle-delete-modal="toggleDeleteModal" @toggle-edit-modal="toggleAddEditModal('edit')" />
+                <PasswordCard v-if="passwords && passwords.length > 0" :passwords="passwords"
+                    @toggle-delete-modal="toggleDeleteModal"
+                    @toggle-edit-modal="toggleAddEditModal('edit', $event as Password)" />
             </div>
         </div>
     </div>
@@ -36,8 +60,9 @@ const closeModals = () => {
     <!-- ADD, EDIT, DELETE MODAL -->
     <BaseModal v-if="showAddEditModal || showDeleteModal" :width="mode === 'delete' ? '50rem' : '70rem'"
         :height="mode === 'delete' ? '20rem' : '60rem'" @close="closeModals">
-        <AddPassword v-if="mode === 'add' || mode === 'edit'" :mode="mode" />
-        <DeletePassword v-if="mode === 'delete'" @close="closeModals" />
+        <AddPassword v-if="mode === 'add' || mode === 'edit'" :mode="mode" :categories="categories"
+            :password-to-edit="passwordToEdit" @close="closeModals" />
+        <DeletePassword v-if="mode === 'delete'" :id="passwordToDeleteId" @close="closeModals" />
     </BaseModal>
 </template>
 

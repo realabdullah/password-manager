@@ -1,22 +1,23 @@
 <script lang="ts" setup>
-defineEmits(["toggle-delete-modal", "toggle-edit-modal"]);
+interface Props {
+    passwords: Password[];
+}
 
-const passwords = [
-    { id: 1, brand: "Netflix", brandImage: "https://i.ibb.co/Sy0SDTL/netflix.png", email: "johndoe@gmail.com", password: "***********", website: "https://www.netflix.com" },
-    { id: 2, brand: "HBO Max", brandImage: "https://i.ibb.co/W3w6rNs/hbo.png", email: "johndoe@gmail.com", password: "***********", website: "https://www.hbomax.com" },
-    { id: 3, brand: "Hulu", brandImage: "https://i.ibb.co/G2FnqqC/hulu.png", email: "johndoe12@gmail.com", password: "***********", website: "https://www.hulu.com" },
-    { id: 4, brand: "Amazon Prime Video", brandImage: "https://i.ibb.co/8P80nWR/prime.png", email: "johndoe16@gmail.com", password: "***********", website: "https://www.primevideo.com" },
-    { id: 5, brand: "Paramount+", brandImage: "https://i.ibb.co/1X9Gtct/paramount.png", email: "johndoe161@gmail.com", password: "***********", website: "https://www.paramountplus.com" },
-];
+defineEmits<{
+    (event: "toggle-delete-modal", id: string): void;
+    (event: "toggle-edit-modal", password: Object): void;
+}>();
 
-const selectedPassword = ref(0);
+const props = defineProps<Props>();
+
+const selectedPassword = ref("");
 const accountOpened = ref(false);
 const showPassword = ref(false);
 
-const toggleAccount = (id: number) => {
+const toggleAccount = (id: string) => {
     showPassword.value = false;
-    selectedPassword.value = (selectedPassword.value === id) ? 0 : id;
-    accountOpened.value = (selectedPassword.value !== 0);
+    selectedPassword.value = (selectedPassword.value === id) ? "" : id;
+    accountOpened.value = (selectedPassword.value !== "");
 };
 
 // copy to clipboard
@@ -30,11 +31,13 @@ const copyToClipboard = async (text: string) => {
 };
 
 // toggle password visibility for selected account
-const togglePasswordVisibility = (id: number) => {
+const togglePasswordVisibility = (id: string) => {
     if (selectedPassword.value === id) {
         showPassword.value = !showPassword.value;
     }
 };
+
+const revealPassword = computed(() => showPassword.value ? props.passwords.find((password: Password) => password.id === selectedPassword.value)?.password : "*********")
 </script>
 
 <template>
@@ -43,8 +46,8 @@ const togglePasswordVisibility = (id: number) => {
             <div class="account d-flex align-items-center justify-content-space-between"
                 @click="toggleAccount(password.id)">
                 <div class="account__info d-flex align-items-center">
-                    <img :src="password.brandImage" :alt="password.brand" />
-                    <h4>{{ password.brand }} <span>- {{ password.email }}</span></h4>
+                    <img :src="password.image" :alt="password.name" />
+                    <h4>{{ password.name }} <span>- {{ password.email }}</span></h4>
                 </div>
                 <button class="account__toggle">
                     <IconCaret :direction="accountOpened && selectedPassword === password.id ? 'up' : 'down'" />
@@ -54,7 +57,7 @@ const togglePasswordVisibility = (id: number) => {
             <!-- account password info -->
             <div v-show="accountOpened && selectedPassword === password.id" class="passwords__card-body">
                 <button class="edit d-flex align-items-center justify-content-center weight-400"
-                    @click="$emit('toggle-edit-modal')">Edit</button>
+                    @click="$emit('toggle-edit-modal', password)">Edit</button>
 
                 <ul class="passwords__card-body-content w-100 d-flex flex-column">
                     <div class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between">
@@ -66,7 +69,7 @@ const togglePasswordVisibility = (id: number) => {
 
                     <div class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between">
                         <div class="d-flex align-items-center" style="gap: 1rem;">
-                            <span class="weight-500">Password: {{ password.password }}</span>
+                            <span class="weight-500">Password: {{ revealPassword }}</span>
                             <button @click="togglePasswordVisibility(password.id)">
                                 <IconVisibility :visibility="showPassword ? 'hidden' : 'show'" />
                             </button>
@@ -85,7 +88,7 @@ const togglePasswordVisibility = (id: number) => {
             </div>
 
             <!-- remove password -->
-            <button class="position-absolute remove" @click="$emit('toggle-delete-modal')">
+            <button class="position-absolute remove" @click="$emit('toggle-delete-modal', password.id)">
                 <IconRemove />
             </button>
         </div>

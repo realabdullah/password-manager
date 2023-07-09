@@ -4,15 +4,21 @@ interface Props {
     label: string;
     type: string;
     placeholder: string;
+    modelValue: string | number;
+}
+
+interface InputEmits {
+    (event: "update:modelValue", value: string): void;
 }
 
 defineProps<Props>();
+defineEmits<InputEmits>();
 </script>
 
 <template>
     <label :for="for" class="w-100 d-flex flex-column">
         <span class="weight-400">{{ label }}</span>
-        <input :type="type" :id="for" :placeholder=" placeholder " />
+        <input :value="modelValue" :type="type" :id="for" :placeholder="placeholder" @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" />
     </label>
 </template>
 
