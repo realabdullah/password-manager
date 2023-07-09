@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 definePageMeta({
-    title: "login"
+    title: "signup"
 })
 </script>
 
 <template>
-    <div class="login">
+    <div class="signup">
         <AuthForm />
     </div>
 </template>
