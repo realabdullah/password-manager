@@ -1,35 +1,7 @@
 <script lang="ts" setup>
-const props = defineProps<{
-    categories: Category[];
-    passwords: Password[];
-}>();
-
-const emits = defineEmits(["refresh"]);
-
-const title = ref("");
-const showAddCategory = ref(false);
-
-const categoryCount = (title: string) => {
-    return props.passwords.filter((password: Password) => password.category === title).length;
-};
-
-let addNewCategory: (category: Category) => void;
-
-const submitForm = async () => {
-    if (title.value.trim() === "") return;
-    const payload: Category = {
-        id: window.crypto.getRandomValues(new Uint32Array(1))[0].toString(),
-        title: title.value,
-    }
-    await addNewCategory(payload);
-    title.value = "";
-    showAddCategory.value = false;
-    emits("refresh");
-};
-
-onMounted(async () => {
-    addNewCategory = usePassword().addCategory;
-});
+const { categories } = storeToRefs(useStore());
+const { categoryCount } = useStore();
+const { title, showAddCategory, addNewCategory } = useCategory();
 </script>
 
 <template>
@@ -45,15 +17,16 @@ onMounted(async () => {
             <li class="sidebar__list-item" v-for="category in categories">
                 <button class="w-100 d-flex align-items-center justify-content-space-between">
                     <span class="category weight-600">{{ category.title }}</span>
-                    <span class="count d-flex align-items-center justify-content-center">{{ categoryCount(category.title)
-                    }}</span>
+                    <span class="count d-flex align-items-center justify-content-center">
+                        {{ categoryCount(category.title) }}
+                    </span>
                 </button>
             </li>
         </ul>
 
         <span v-else>No categories yet!</span>
 
-        <form v-if="showAddCategory" class="w-100" @submit.prevent="submitForm">
+        <form v-if="showAddCategory" class="w-100" @submit.prevent="addNewCategory">
             <input v-model="title" class="w-100" type="text" placeholder="Category title" />
         </form>
     </div>

@@ -1,14 +1,10 @@
 <script lang="ts" setup>
-interface Props {
-    passwords: Password[];
-}
+const { passwords } = storeToRefs(useStore());
 
 defineEmits<{
     (event: "toggle-delete-modal", id: string): void;
     (event: "toggle-edit-modal", password: Object): void;
 }>();
-
-const props = defineProps<Props>();
 
 const selectedPassword = ref("");
 const accountOpened = ref(false);
@@ -16,8 +12,8 @@ const showPassword = ref(false);
 
 const toggleAccount = (id: string) => {
     showPassword.value = false;
-    selectedPassword.value = (selectedPassword.value === id) ? "" : id;
-    accountOpened.value = (selectedPassword.value !== "");
+    selectedPassword.value = selectedPassword.value === id ? "" : id;
+    accountOpened.value = selectedPassword.value !== "";
 };
 
 // copy to clipboard
@@ -37,7 +33,13 @@ const togglePasswordVisibility = (id: string) => {
     }
 };
 
-const revealPassword = computed(() => showPassword.value ? props.passwords.find((password: Password) => password.id === selectedPassword.value)?.password : "*********")
+const revealPassword = computed(() =>
+    showPassword.value
+        ? passwords.value.find(
+            (password: Password) => password.id === selectedPassword.value
+        )?.password
+        : "*********"
+);
 </script>
 
 <template>
@@ -47,17 +49,23 @@ const revealPassword = computed(() => showPassword.value ? props.passwords.find(
                 @click="toggleAccount(password.id)">
                 <div class="account__info d-flex align-items-center">
                     <img :src="password.image" :alt="password.name" />
-                    <h4>{{ password.name }} <span>- {{ password.email }}</span></h4>
+                    <h4>
+                        {{ password.name }}
+                        <span>- {{ password.email }}</span>
+                    </h4>
                 </div>
                 <button class="account__toggle">
-                    <IconCaret :direction="accountOpened && selectedPassword === password.id ? 'up' : 'down'" />
+                    <IconCaret :direction="accountOpened && selectedPassword === password.id ? 'up' : 'down'
+                        " />
                 </button>
             </div>
 
             <!-- account password info -->
             <div v-show="accountOpened && selectedPassword === password.id" class="passwords__card-body">
                 <button class="edit d-flex align-items-center justify-content-center weight-400"
-                    @click="$emit('toggle-edit-modal', password)">Edit</button>
+                    @click="$emit('toggle-edit-modal', password)">
+                    Edit
+                </button>
 
                 <ul class="passwords__card-body-content w-100 d-flex flex-column">
                     <div class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between">
@@ -68,7 +76,7 @@ const revealPassword = computed(() => showPassword.value ? props.passwords.find(
                     </div>
 
                     <div class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between">
-                        <div class="d-flex align-items-center" style="gap: 1rem;">
+                        <div class="d-flex align-items-center" style="gap: 1rem">
                             <span class="weight-500">Password: {{ revealPassword }}</span>
                             <button @click="togglePasswordVisibility(password.id)">
                                 <IconVisibility :visibility="showPassword ? 'hidden' : 'show'" />

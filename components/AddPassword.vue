@@ -2,9 +2,8 @@
 interface Props {
     mode: string;
     passwordToEdit: Password;
-    categories: Category[];
 }
-
+const { categories } = storeToRefs(useStore());
 const props = defineProps<Props>();
 const emits = defineEmits(["close"]);
 
@@ -18,25 +17,41 @@ let addPassword: (password: Password) => void;
 let editPassword: (password: Password) => void;
 
 const saveChanges = () => {
-    if (website.value === "" || email.value === "" || password.value === "" || name.value === "") {
+    if (
+        website.value === "" ||
+        email.value === "" ||
+        password.value === "" ||
+        name.value === ""
+    ) {
         useEvent("showToast", "Please fill in all fields!");
         return;
     }
 
     const passwordObj: Password = {
-        id: props.mode === "edit" ? props.passwordToEdit.id : window.crypto.randomUUID(),
+        id:
+            props.mode === "edit"
+                ? props.passwordToEdit.id
+                : window.crypto.randomUUID(),
         name: name.value,
         website: website.value,
         email: email.value,
         password: password.value,
         category: category.value,
-        image: 'https://ui-avatars.com/api/?name=' + name.value,
-        createdAt: props.mode === "edit" ? props.passwordToEdit.createdAt : new Date().toLocaleDateString(),
+        image: "https://ui-avatars.com/api/?name=" + name.value,
+        createdAt:
+            props.mode === "edit"
+                ? props.passwordToEdit.createdAt
+                : new Date().toLocaleDateString(),
     };
 
-    props.mode === "edit" ? editPassword(passwordObj) : addPassword(passwordObj);
+    props.mode === "edit"
+        ? editPassword(passwordObj)
+        : addPassword(passwordObj);
     emits("close");
-    useEvent("showToast", `Password successfully ${props.mode === "edit" ? "edited" : "added"}!`);
+    useEvent(
+        "showToast",
+        `Password successfully ${props.mode === "edit" ? "edited" : "added"}!`
+    );
 };
 
 if (props.mode === "edit") {
@@ -55,8 +70,9 @@ onMounted(() => {
 
 <template>
     <div class="add__password d-flex flex-column">
-        <h1 class="add__password-header weight-600 text-center">{{ mode === "edit" ? "Edit Password" : "Add a New Password"
-        }}</h1>
+        <h1 class="add__password-header weight-600 text-center">
+            {{ mode === "edit" ? "Edit Password" : "Add a New Password" }}
+        </h1>
 
         <form class="add__password-form w-100 d-flex flex-column" @submit.prevent="saveChanges">
             <BaseText v-model="name" for="name" label="Account Name" type="text" placeholder="Netflix" />
