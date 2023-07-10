@@ -1,11 +1,15 @@
 <script lang="ts" setup>
+definePageMeta({
+    middleware: ["auth"],
+});
+
 const showDeleteModal = ref(false);
 const showAddEditModal = ref(false);
 const mode = ref("");
 const passwordToEdit = ref<Password>({} as Password);
 const passwordToDeleteId = ref("");
 
-const { categories, passwords } = storeToRefs(useStore());
+const { passwords } = storeToRefs(useStore());
 const { fetchPasswordsAndCategories } = useStore();
 
 const toggleDeleteModal = async (id: string) => {
@@ -24,7 +28,6 @@ const closeModals = async () => {
     mode.value = "";
     showDeleteModal.value = false;
     showAddEditModal.value = false;
-    await fetchPasswordsAndCategories();
 };
 
 await fetchPasswordsAndCategories();

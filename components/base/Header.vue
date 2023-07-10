@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+const { user, logOut } = useStore();
 const showMenu = ref(false);
 </script>
 
@@ -7,8 +8,8 @@ const showMenu = ref(false);
         <IconLogo class="logo" />
 
         <button class="account d-flex align-items-center" @click="showMenu = !showMenu">
-            <img src="/assets/images/avatar.png" alt="avatar">
-            <span class="weight-400">Johndoe@gmail.com</span>
+            <img :src="`https://ui-avatars.com/api/?name=${user?.username}`" :alt="user?.username">
+            <span class="weight-400">{{ user?.email }}</span>
             <IconCaret :direction="showMenu ? 'up' : 'down'" />
         </button>
 
@@ -17,7 +18,7 @@ const showMenu = ref(false);
                 <IconDropdown type="password" />
                 Change Password
             </button>
-            <button class="d-flex align-items-center">
+            <button class="d-flex align-items-center" @click="logOut">
                 <IconDropdown type="logout" />
                 Sign Out
             </button>

@@ -1,6 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-	ssr: false,
 	app: {
 		head: {
 			htmlAttrs: {
@@ -33,6 +32,11 @@ export default defineNuxtConfig({
 			},
 		},
 	},
+	runtimeConfig: {
+		public: {
+			baseUrl: process.env.BASE_URL,
+		},
+	},
 	modules: ["@pinia/nuxt"],
 	imports: {
 		dirs: ["store"],
@@ -44,4 +48,5 @@ export default defineNuxtConfig({
 		port: 4000,
 	},
 	devtools: { enabled: true },
+	plugins: ["~/plugins/axios.ts"],
 });

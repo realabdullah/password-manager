@@ -1,7 +1,6 @@
 export const useCategory = () => {
-	const { addCategory, getCategories } = usePassword();
-	const { categories } = storeToRefs(useStore());
-	const title = ref("");
+	const { createCategory, getAllCategories } = useStore();
+	const name = ref("");
 	const showAddCategory = ref(false);
 	const showCategoryDropdown = ref(false);
 
@@ -17,19 +16,19 @@ export const useCategory = () => {
 	};
 
 	const addNewCategory = async () => {
-		if (title.value.trim() === "") return;
-		const payload: Category = {
-			id: window.crypto.getRandomValues(new Uint32Array(1))[0].toString(),
-			title: title.value,
-		};
-		await addCategory(payload);
-		title.value = "";
-		showAddCategory.value = false;
-		categories.value = await getCategories();
+		try {
+			if (name.value.trim() === "") return;
+			const status = await createCategory(name.value);
+			if (!status) throw new Error();
+			name.value = "";
+			showAddCategory.value = false;
+			await getAllCategories();
+			useEvent("showToast", "Category added successfully!");
+		} catch (error) {}
 	};
 
 	return {
-		title,
+		name,
 		showAddCategory,
 		showCategoryDropdown,
 		addNewCategory,

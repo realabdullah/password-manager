@@ -3,7 +3,7 @@ defineEmits(["toggle-add-modal"]);
 const { categories } = storeToRefs(useStore());
 const { categoryCount } = useStore();
 const {
-    title,
+    name,
     showCategoryDropdown,
     showAddCategory,
     openAddCategory,
@@ -35,15 +35,15 @@ const {
                     <button v-for="category in categories"
                         class="d-flex align-items-center justify-content-space-between w-100">
                         <span class="category weight-600 text-transform-capitalize">
-                            {{ category.title }}
+                            {{ category.name }}
                         </span>
                         <span class="count d-flex align-items-center justify-content-center">
-                            {{ categoryCount(category.title) }}
+                            {{ categoryCount(category.name) }}
                         </span>
                     </button>
 
                     <form v-if="showAddCategory" class="w-100" @submit.prevent="addNewCategory">
-                        <input v-model="title" class="w-100" type="text" placeholder="Category title" />
+                        <input v-model="name" class="w-100" type="text" placeholder="Category name" />
                     </form>
                 </div>
             </div>

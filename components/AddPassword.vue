@@ -1,71 +1,68 @@
 <script lang="ts" setup>
 interface Props {
     mode: string;
-    passwordToEdit: Password;
+    passwordToEdit: any;
 }
+
 const { categories } = storeToRefs(useStore());
+const { addPassword, updatePassword } = useStore();
 const props = defineProps<Props>();
 const emits = defineEmits(["close"]);
 
-const name = ref("");
+const accountName = ref("");
 const email = ref("");
 const password = ref("");
 const website = ref("");
 const category = ref("");
 
-let addPassword: (password: Password) => void;
-let editPassword: (password: Password) => void;
-
-const saveChanges = () => {
+const checkAllFields = () => {
     if (
         website.value === "" ||
         email.value === "" ||
         password.value === "" ||
-        name.value === ""
+        accountName.value === "" ||
+        category.value === ""
     ) {
         useEvent("showToast", "Please fill in all fields!");
-        return;
+        return false;
     }
+    return true;
+};
 
-    const passwordObj: Password = {
-        id:
-            props.mode === "edit"
-                ? props.passwordToEdit.id
-                : window.crypto.randomUUID(),
-        name: name.value,
-        website: website.value,
-        email: email.value,
-        password: password.value,
-        category: category.value,
-        image: "https://ui-avatars.com/api/?name=" + name.value,
-        createdAt:
-            props.mode === "edit"
-                ? props.passwordToEdit.createdAt
-                : new Date().toLocaleDateString(),
-    };
+const saveChanges = async () => {
+    try {
+        if (!checkAllFields()) return;
 
-    props.mode === "edit"
-        ? editPassword(passwordObj)
-        : addPassword(passwordObj);
-    emits("close");
-    useEvent(
-        "showToast",
-        `Password successfully ${props.mode === "edit" ? "edited" : "added"}!`
-    );
+        const passwordObj = {
+            ...(props.mode === "edit" && { _id: props.passwordToEdit.id }),
+            website: website.value,
+            account_name: accountName.value,
+            category: category.value,
+            username: email.value,
+            password: password.value,
+        };
+
+        if (props.mode === "edit") {
+            const status = await updatePassword(props.passwordToEdit._id, props.passwordToEdit.website);
+            if (!status) throw new Error();
+        } else {
+            const status = await addPassword(passwordObj);
+            if (!status) throw new Error();
+        }
+        useEvent("showToast", `Password successfully ${props.mode === "edit" ? "edited" : "added"}!`);
+        emits("close");
+    } catch {
+        useEvent("showToast", "Something went wrong!");
+    }
 };
 
 if (props.mode === "edit") {
-    name.value = props.passwordToEdit.name;
     website.value = props.passwordToEdit.website;
-    email.value = props.passwordToEdit.email;
-    password.value = props.passwordToEdit.password;
+    accountName.value = props.passwordToEdit.accountName;
     category.value = props.passwordToEdit.category;
+    email.value = props.passwordToEdit.username;
+    password.value = props.passwordToEdit.password;
 }
-
-onMounted(() => {
-    addPassword = usePassword().addPassword;
-    editPassword = usePassword().editPassword;
-});
 </script>
 
 <template>
@@ -75,7 +72,7 @@ onMounted(() => {
         </h1>
 
         <form class="add__password-form w-100 d-flex flex-column" @submit.prevent="saveChanges">
-            <BaseText v-model="name" for="name" label="Account Name" type="text" placeholder="Netflix" />
+            <BaseText v-model="accountName" for="name" label="Account Name" type="text" placeholder="Netflix" />
             <BaseText v-model="website" for="website" label="Website" type="text" placeholder="https://example.com" />
             <BaseText v-model="email" for="email" label="Email" type="email" placeholder="johndoe@gmail.com" />
             <BaseText v-model="password" for="password" label="Password" type="password"

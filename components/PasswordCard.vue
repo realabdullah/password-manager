@@ -36,7 +36,7 @@ const togglePasswordVisibility = (id: string) => {
 const revealPassword = computed(() =>
     showPassword.value
         ? passwords.value.find(
-            (password: Password) => password.id === selectedPassword.value
+            (password: Password) => password._id === selectedPassword.value
         )?.password
         : "*********"
 );
@@ -46,22 +46,22 @@ const revealPassword = computed(() =>
     <div class="passwords d-flex flex-column w-100">
         <div v-for="password in passwords" class="passwords__card position-relative">
             <div class="account d-flex align-items-center justify-content-space-between"
-                @click="toggleAccount(password.id)">
+                @click="toggleAccount(password._id)">
                 <div class="account__info d-flex align-items-center">
-                    <img :src="password.image" :alt="password.name" />
+                    <img :src="password.image" :alt="password.account_name" />
                     <h4>
-                        {{ password.name }}
+                        {{ password.account_name }}
                         <span>- {{ password.email }}</span>
                     </h4>
                 </div>
                 <button class="account__toggle">
-                    <IconCaret :direction="accountOpened && selectedPassword === password.id ? 'up' : 'down'
+                    <IconCaret :direction="accountOpened && selectedPassword === password._id ? 'up' : 'down'
                         " />
                 </button>
             </div>
 
             <!-- account password info -->
-            <div v-show="accountOpened && selectedPassword === password.id" class="passwords__card-body">
+            <div v-show="accountOpened && selectedPassword === password._id" class="passwords__card-body">
                 <button class="edit d-flex align-items-center justify-content-center weight-400"
                     @click="$emit('toggle-edit-modal', password)">
                     Edit
@@ -78,7 +78,7 @@ const revealPassword = computed(() =>
                     <div class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between">
                         <div class="d-flex align-items-center" style="gap: 1rem">
                             <span class="weight-500">Password: {{ revealPassword }}</span>
-                            <button @click="togglePasswordVisibility(password.id)">
+                            <button @click="togglePasswordVisibility(password._id)">
                                 <IconVisibility :visibility="showPassword ? 'hidden' : 'show'" />
                             </button>
                         </div>
@@ -96,7 +96,7 @@ const revealPassword = computed(() =>
             </div>
 
             <!-- remove password -->
-            <button class="position-absolute remove" @click="$emit('toggle-delete-modal', password.id)">
+            <button class="position-absolute remove" @click="$emit('toggle-delete-modal', password._id)">
                 <IconRemove />
             </button>
         </div>

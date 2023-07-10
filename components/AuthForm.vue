@@ -1,5 +1,8 @@
 <script lang="ts" setup>
+const { $axios } = useNuxtApp();
 const route = useRoute();
+const { logIn } = useStore();
+
 const pageText = computed(() => {
     if (route.name === "signup") {
         return "Create an account and start managing your passwords effectively.";
@@ -8,56 +11,93 @@ const pageText = computed(() => {
     }
 });
 
-const submitForm = () => {
-    const email = document.getElementById("email") as HTMLInputElement;
-    const password = document.getElementById("password") as HTMLInputElement;
-    const cpassword = document.getElementById("cpassword") as HTMLInputElement;
+const name = ref("");
+const username = ref("");
+const email = ref("");
+const password = ref("");
+const cpassword = ref("");
 
-    if (!email.value || !password.value) {
-        useEvent("showToast", "Please fill in all fields");
-        return;
-    }
+const registerObj: RegisterData = reactive({
+    name,
+    username,
+    email,
+    password,
+});
 
-    if (route.name === "signup") {
-        if (password.value !== cpassword.value) {
-            useEvent("showToast", "Passwords do not match");
+const submitForm = async () => {
+    try {
+        if (!email.value || !password.value) {
+            useEvent("showToast", "Please fill in all fields");
             return;
         }
 
-        if (password.value.length < 8) {
-            useEvent("showToast", "Password must be at least 8 characters long");
-            return;
-        }
-    }
+        if (route.name === "signup") {
+            if (password.value !== cpassword.value) {
+                useEvent("showToast", "Passwords do not match");
+                return;
+            }
 
-    navigateTo("/dashboard");
-}
+            const response: APIResponse = await $axios.post("register", registerObj);
+            if (!response.success) {
+                return useEvent("showToast", response.message);
+            }
+
+            useEvent("showToast", "Account created successfully");
+            return navigateTo("/");
+        }
+
+        const data: LoginData = {
+            email: email.value,
+            password: password.value,
+        };
+
+        const response = await logIn(data);
+        typeof response === "string"
+            ? useEvent("showToast", response)
+            : navigateTo("/dashboard");
+    } catch (error: any) {
+        useEvent("showToast", error.message);
+    }
+};
 </script>
 
 <template>
     <div class="auth__form w-100 d-flex flex-column align-items-center">
         <IconLogo />
-        <span class="auth__form-desc w-100 weight-500 text-center">{{ pageText }}</span>
+        <span class="auth__form-desc w-100 weight-500 text-center">
+            {{ pageText }}
+        </span>
 
         <form class="d-flex flex-column" @submit.prevent="submitForm">
-            <BaseText label="Email" for="email" type="email" placeholder="johndoe@gmail.com" />
-            <BaseText label="Password" for="password" type="password" placeholder="********************" />
-            <BaseText v-if="route.name === 'signup'" label="Confirm Password" for="cpassword" type="password"
+            <BaseText v-if="route.name === 'signup'" v-model="name" label="Full Name" for="name" type="text"
+                placeholder="John Idan" />
+            <BaseText v-if="route.name === 'signup'" v-model="username" label="Username" for="username" type="text"
+                placeholder="highdan" />
+            <BaseText v-model="email" label="Email" for="email" type="email" placeholder="johndoe@gmail.com" />
+            <BaseText v-model="password" label="Password" for="password" type="password"
                 placeholder="********************" />
+            <BaseText v-if="route.name === 'signup'" v-model="cpassword" label="Confirm Password" for="cpassword"
+                type="password" placeholder="********************" />
 
             <button type="submit" class="btn w-100 text-center">
                 {{ route.name === "signup" ? "Sign Up" : "Login" }}
                 <IconArrow direction="right" />
             </button>
         </form>
-        <p v-if="route.name === 'signup'" class="forgot-password d-flex align-items-center justify-content-center">Already
-            have an account?<nuxt-link to="/">Login</nuxt-link></p>
-        <p v-else class="forgot-password d-flex align-items-center justify-content-center">Forgot
-            Password? <nuxt-link to="/forgot-password">Request a new one</nuxt-link></p>
+        <p v-if="route.name === 'signup'" class="forgot-password d-flex align-items-center justify-content-center">
+            Already have an account?
+            <nuxt-link to="/">Login</nuxt-link>
+        </p>
+        <p v-else class="forgot-password d-flex align-items-center justify-content-center">
+            Forgot Password?
+            <nuxt-link to="/forgot-password">Request a new one</nuxt-link>
+        </p>
 
         <p v-if="route.name !== 'signup'" class="forgot-password d-flex align-items-center justify-content-center"
-            style="margin-top: 5rem;">Don’t
-            have an Account?<nuxt-link to="/signup">Sign Up</nuxt-link></p>
+            style="margin-top: 5rem">
+            Don’t have an Account?
+            <nuxt-link to="/signup">Sign Up</nuxt-link>
+        </p>
     </div>
 </template>
 
@@ -83,7 +123,7 @@ const submitForm = () => {
             margin-top: 2rem;
             background-color: $col-bluePurple;
             color: $col-white;
-            border-radius: .8rem;
+            border-radius: 0.8rem;
             padding: 1.5rem;
             transition: all 0.2s;
 

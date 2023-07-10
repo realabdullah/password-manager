@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 const { categories } = storeToRefs(useStore());
 const { categoryCount } = useStore();
-const { title, showAddCategory, addNewCategory } = useCategory();
+const { name, showAddCategory, addNewCategory } = useCategory();
 </script>
 
 <template>
@@ -16,9 +16,9 @@ const { title, showAddCategory, addNewCategory } = useCategory();
         <ul v-if="categories.length > 0" class="sidebar__list d-flex flex-column w-100">
             <li class="sidebar__list-item" v-for="category in categories">
                 <button class="w-100 d-flex align-items-center justify-content-space-between">
-                    <span class="category weight-600">{{ category.title }}</span>
+                    <span class="category weight-600">{{ category.name }}</span>
                     <span class="count d-flex align-items-center justify-content-center">
-                        {{ categoryCount(category.title) }}
+                        {{ categoryCount(category.name) }}
                     </span>
                 </button>
             </li>
@@ -27,7 +27,7 @@ const { title, showAddCategory, addNewCategory } = useCategory();
         <span v-else>No categories yet!</span>
 
         <form v-if="showAddCategory" class="w-100" @submit.prevent="addNewCategory">
-            <input v-model="title" class="w-100" type="text" placeholder="Category title" />
+            <input v-model="name" class="w-100" type="text" placeholder="Category name" />
         </form>
     </div>
 </template>

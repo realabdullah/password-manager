@@ -3,19 +3,19 @@ const props = defineProps<{
     id: string;
 }>();
 
+const { deletePassword } = useStore();
 const emits = defineEmits(["close"]);
 
-let deletePassword: (id: string) => void;
-
 const removePassword = () => {
-    deletePassword(props.id);
-    useEvent("showToast", "Password deleted successfully!");
-    emits("close");
+    try {
+        const status = deletePassword(props.id);
+        if (!status) throw new Error();
+        useEvent("showToast", "Password deleted successfully!");
+        emits("close");
+    } catch {
+        useEvent("showToast", "Failed to delete password!");
+    }
 };
-
-onMounted(() => {
-    deletePassword = usePassword().deletePassword;
-})
 </script>
 
 <template>

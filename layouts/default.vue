@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+definePageMeta({
+    middleware: ["guest"],
+});
+
 const showToast = ref(false);
 const toastMessage = ref("");
 
