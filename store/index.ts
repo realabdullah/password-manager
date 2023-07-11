@@ -3,14 +3,17 @@ import { defineStore } from "pinia";
 export const useStore = defineStore("store", () => {
 	const { $axios } = useNuxtApp();
 
+	const userToken = ref<string>("");
 	const user = ref<User | null>(null);
 	const categories = ref<Category[]>([]);
 	const passwords = ref<Password[]>([]);
 
 	const categoryCount = (title: string) => {
-		return passwords.value.filter(
-			(password: Password) => password.category === title
-		).length;
+		if (passwords.value.length > 0) {
+			return passwords.value.filter(password => password.category === title).length;
+		}
+
+		return 0;
 	};
 
 	const fetchPasswordsAndCategories = async () => {
@@ -19,12 +22,12 @@ export const useStore = defineStore("store", () => {
 	};
 
 	const logIn = async (data: LoginData) => {
-		const response: LoginResponse = await $axios.post("login", data);
-		if (!response.success) {
-			return response.message;
+		const response = await $axios.post("login", data);
+		if (!response.data.success) {
+			return response.data.message;
 		}
-
-		const { user: userObj, tokens } = response.data;
+		
+		const { user: userObj, tokens } = response.data.data;
 		const { access, refresh } = tokens;
 		const { token, expires } = access;
 		const { token: refreshToken, expires: refreshExpires } = refresh;
@@ -33,11 +36,12 @@ export const useStore = defineStore("store", () => {
 		useCookie("refresh_token_exp").value = refreshExpires;
 
 		useCookie("token").value = token;
+		userToken.value = token;
 		useCookie("refresh_token").value = refreshToken;
 
 		user.value = userObj;
 
-		return response.success;
+		return response.data.success;
 	};
 
 	const logOut = async () => {
@@ -57,56 +61,57 @@ export const useStore = defineStore("store", () => {
 	};
 
 	const addPassword = async (data: any) => {
-		const response: APIResponse = await $axios.post("passwords", data);
-		if (!response.success) return response.success;
+		const response = await $axios.post("passwords", data);
+		if (!response.data.success) return response.data.success;
 		await fetchPasswordsAndCategories();
-		return response.success;
+		return response.data.success;
 	};
 
 	const createCategory = async (name: string) => {
-		const response: APIResponse = await $axios.post("categories", {
+		const response = await $axios.post("categories", {
 			name,
 		});
-		if (!response.success) return response.success;
+		if (!response.data.success) return response.data.success;
 		await fetchPasswordsAndCategories();
-		return response.success;
+		return response.data.success;
 	};
 
 	const getAllCategories = async () => {
-		const response: GetCategoriesResponse = await $axios.get("categories");
-		if (!response.success) return;
-		categories.value = response.data.data;
+		const response = await $axios.get("categories");
+		if (!response.data.success) return;
+		categories.value = response.data.data.data;
 	};
 
 	const getAllPasswords = async () => {
-		const response: GetPasswordsResponse = await $axios.get("passwords");
-		if (!response.success) return;
-		passwords.value = response.data.data;
+		const response = await $axios.get("passwords");
+		if (!response.data.success) return;
+		passwords.value = response.data.data.data;
 	};
 
 	const deletePassword = async (id: string) => {
-		const response: APIResponse = await $axios.delete("passwords", {
+		const response = await $axios.delete("passwords", {
 			data: {
 				_ids: [id],
 			},
 		});
-		if (!response.success) return response.success;
+		if (!response.data.success) return response.data.success;
 		await fetchPasswordsAndCategories();
-		return response.success;
+		return response.data.success;
 	};
 
 	const updatePassword = async (_id: string, website: string) => {
-		const response: APIResponse = await $axios.put("passwords", {
+		const response = await $axios.put("passwords", {
 			_id,
 			website,
 		});
-		if (!response.success) return response.success;
+		if (!response.data.success) return response.data.success;
 		await fetchPasswordsAndCategories();
-		return response.success;
+		return response.data.success;
 	};
 
 	return {
 		user,
+		userToken,
 		categories,
 		passwords,
 		logIn,
@@ -115,6 +120,7 @@ export const useStore = defineStore("store", () => {
 		fetchPasswordsAndCategories,
 		addPassword,
 		createCategory,
+		getAllPasswords,
 		getAllCategories,
 		deletePassword,
 		updatePassword,

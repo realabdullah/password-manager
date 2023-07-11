@@ -51,7 +51,7 @@ const revealPassword = computed(() =>
                     <img :src="password.image" :alt="password.account_name" />
                     <h4>
                         {{ password.account_name }}
-                        <span>- {{ password.email }}</span>
+                        <span>- {{ password.username }}</span>
                     </h4>
                 </div>
                 <button class="account__toggle">
@@ -69,8 +69,8 @@ const revealPassword = computed(() =>
 
                 <ul class="passwords__card-body-content w-100 d-flex flex-column">
                     <div class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between">
-                        <span class="weight-500">Email: {{ password.email }}</span>
-                        <button @click="copyToClipboard(password.email)">
+                        <span class="weight-500">Email: {{ password.username }}</span>
+                        <button @click="copyToClipboard(password.username)">
                             <IconCopy />
                         </button>
                     </div>

@@ -37,8 +37,8 @@ const submitForm = async () => {
                 return;
             }
 
-            const response: APIResponse = await $axios.post("register", registerObj);
-            if (!response.success) {
+            const response = await $axios.post("register", registerObj);
+            if (!response.data.success) {
                 return useEvent("showToast", response.message);
             }
 
@@ -56,7 +56,7 @@ const submitForm = async () => {
             ? useEvent("showToast", response)
             : navigateTo("/dashboard");
     } catch (error: any) {
-        useEvent("showToast", error.message);
+        useEvent("showToast", error?.response?.data?.message || "An error occurred while processing your request!");
     }
 };
 </script>
@@ -79,7 +79,7 @@ const submitForm = async () => {
             <BaseText v-if="route.name === 'signup'" v-model="cpassword" label="Confirm Password" for="cpassword"
                 type="password" placeholder="********************" />
 
-            <button type="submit" class="btn w-100 text-center">
+            <button class="btn w-100 text-center">
                 {{ route.name === "signup" ? "Sign Up" : "Login" }}
                 <IconArrow direction="right" />
             </button>

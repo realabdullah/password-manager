@@ -7,13 +7,12 @@ export default defineNuxtPlugin(() => {
 		baseURL: envKeys.public.baseUrl as string,
 		headers: {
 			"Content-Type": "application/json",
-			Authorization: `Bearer ${token.value}`,
+			Authorization: "Bearer " + token.value,
 		},
 	});
 
 	if (token.value) {
 		useAxios.interceptors.response.use(async (config) => {
-			console.log("axios config ==> ", config);
 			// TODO: Unauthorized code is subject to change
 			if (config.status === 401) {
 				const tokenExp = useCookie("token_exp");

@@ -1,12 +1,10 @@
 <script lang="ts" setup>
 definePageMeta({
-    title: "login",
+    title: "reset-password",
     middleware: ["guest"],
 })
 </script>
 
 <template>
-    <div class="login">
-        <AuthForm />
-    </div>
+    
 </template>
