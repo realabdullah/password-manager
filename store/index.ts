@@ -131,6 +131,7 @@ export const useStore = defineStore("store", () => {
 		user,
 		categories,
 		passwords,
+		register,
 		logIn,
 		logOut,
 		categoryCount,

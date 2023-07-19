@@ -1,7 +1,6 @@
 <script lang="ts" setup>
-const { $axios } = useNuxtApp();
 const route = useRoute();
-const { logIn } = useStore();
+const { logIn, register } = useStore();
 
 const pageText = computed(() => {
     if (route.name === "signup") {
@@ -37,7 +36,7 @@ const submitForm = async () => {
                 return;
             }
 
-            const response = await registerObj(registerObj)
+            const response = await register(registerObj)
             typeof response === "string"
                 ? useEvent("showToast", response)
                 : navigateTo("/dashboard");
