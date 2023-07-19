@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 definePageMeta({
-    title: "login"
+    title: "login",
+    middleware: ["guest"],
 })
 </script>
 

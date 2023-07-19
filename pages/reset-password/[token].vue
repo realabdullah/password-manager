@@ -1,33 +1,48 @@
 <script lang="ts" setup>
-
 definePageMeta({
     middleware: ["guest"],
+    title: "Reset Password",
 });
 
 const { $axios } = useNuxtApp();
+const route = useRoute();
+const token = route.path.split("/")[2];
 
-const email = ref("");
-const forgotPasswordData: ForgotPasswordData = reactive({ email });
+const password = ref("");
+const resetPasswordData: ForgotPasswordData = reactive({ password, token });
 
-
-const submitForm = async () => {
+const verifyToken = async () => {
     try {
-        if (!email.value) {
-            useEvent("showToast", "Invalid email address");
-            return;
-        }
-
-        const response: APIResponse = await $axios.post("forgot-password", forgotPasswordData);
+        const response: APIResponse = await $axios.post("verify-reset-password-token", { token });
         if (!response.success) {
-            return useEvent("showToast", response.message);
+            useEvent("showToast", "Password reset link has expired");
+            return navigateTo("/404")
         }
-
-        useEvent("showToast", "Email sent successfully");
     } catch (error: any) {
         useEvent("showToast", error.message);
     }
 };
 
+
+const submitForm = async () => {
+    try {
+        if (!password.value) {
+            useEvent("showToast", "Invalid password");
+            return;
+        }
+
+        const response: APIResponse = await $axios.post("reset-password", resetPasswordData);
+        if (!response.success) {
+            return useEvent("showToast", response.message);
+        }
+
+        useEvent("showToast", "Password reset successfully");
+    } catch (error: any) {
+        useEvent("showToast", error.message);
+    }
+};
+
+await verifyToken();
 </script>
 
 <template>
@@ -35,10 +50,11 @@ const submitForm = async () => {
         <IconLogo />
 
         <form class="d-flex flex-column" @submit.prevent="submitForm">
-            <BaseText v-model="email" label="Email" for="email" type="email" placeholder="johndoe@gmail.com" />
+            <BaseText v-model="password" label="Password" for="password" type="password"
+                placeholder="********************" />
 
             <button type="submit" class="btn w-100 text-center">
-                Request Password Reset
+                Reset Password
                 <IconArrow direction="right" />
 
             </button>

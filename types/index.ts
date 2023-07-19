@@ -74,3 +74,7 @@ interface GetPasswordsResponse {
         data: Password[];
     }
 }
+
+export interface ForgotPasswordData {
+    email: string;
+}
