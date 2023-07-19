@@ -13,8 +13,6 @@ export default defineNuxtPlugin(() => {
 
 	if (token.value) {
 		useAxios.interceptors.response.use(async (config) => {
-			console.log("axios config ==> ", config);
-			// TODO: Unauthorized code is subject to change
 			if (config.status === 401) {
 				const tokenExp = useCookie("token_exp");
 				const refreshToken = useCookie("refresh_token");

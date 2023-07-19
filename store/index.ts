@@ -40,6 +40,28 @@ export const useStore = defineStore("store", () => {
 		return response.success;
 	};
 
+	const register = async (data: RegisterData) => {
+		const response: LoginResponse = await $axios.post("register", data);
+		if (!response.success) {
+			return response.message;
+		}
+
+		const { user: userObj, tokens } = response.data;
+		const { access, refresh } = tokens;
+		const { token, expires } = access;
+		const { token: refreshToken, expires: refreshExpires } = refresh;
+
+		useCookie("token_exp").value = expires;
+		useCookie("refresh_token_exp").value = refreshExpires;
+
+		useCookie("token").value = token;
+		useCookie("refresh_token").value = refreshToken;
+
+		user.value = userObj;
+
+		return response.success;
+	};
+
 	const logOut = async () => {
 		const refreshToken = useCookie("refresh_token");
 		await $axios.post("logout", {

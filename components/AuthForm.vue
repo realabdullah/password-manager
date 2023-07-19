@@ -37,13 +37,10 @@ const submitForm = async () => {
                 return;
             }
 
-            const response: APIResponse = await $axios.post("register", registerObj);
-            if (!response.success) {
-                return useEvent("showToast", response.message);
-            }
-
-            useEvent("showToast", "Account created successfully");
-            return navigateTo("/");
+            const response = await registerObj(registerObj)
+            typeof response === "string"
+                ? useEvent("showToast", response)
+                : navigateTo("/dashboard");
         }
 
         const data: LoginData = {
@@ -56,7 +53,10 @@ const submitForm = async () => {
             ? useEvent("showToast", response)
             : navigateTo("/dashboard");
     } catch (error: any) {
-        useEvent("showToast", error.message);
+        if (error.response?.status >= 400 && error.response?.status < 500) {
+            return useEvent("showToast", error.response.data.message);
+        }
+        useEvent("showToast", error.response.message);
     }
 };
 </script>
@@ -86,7 +86,7 @@ const submitForm = async () => {
         </form>
         <p v-if="route.name === 'signup'" class="forgot-password d-flex align-items-center justify-content-center">
             Already have an account?
-            <nuxt-link to="/">Login</nuxt-link>
+            <nuxt-link to="/signin">Login</nuxt-link>
         </p>
         <p v-else class="forgot-password d-flex align-items-center justify-content-center">
             Forgot Password?
