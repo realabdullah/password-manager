@@ -10,7 +10,7 @@ const passwordToEdit = ref<Password>({} as Password);
 const passwordToDeleteId = ref("");
 
 const { passwords } = storeToRefs(useStore());
-const { fetchPasswordsAndCategories } = useStore();
+const { getAllCategories, getAllPasswords } = useStore();
 
 const toggleDeleteModal = async (id: string) => {
     passwordToDeleteId.value = id;
@@ -30,7 +30,8 @@ const closeModals = async () => {
     showAddEditModal.value = false;
 };
 
-await fetchPasswordsAndCategories();
+await getAllCategories();
+await getAllPasswords();
 </script>
 
 <template>

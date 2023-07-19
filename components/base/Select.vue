@@ -19,7 +19,7 @@ defineEmits<Emits>();
         <span>{{ label }}</span>
         <select class="add__password-form-input" :id="for" @change="$emit('update:modelValue', ($event.target as HTMLSelectElement).value)">
             <option value="" disabled selected>Select a category</option>
-            <option v-for="value in values" :value="value.title" :selected="value.title === modelValue">{{ value.title }}</option>
+            <option v-for="value in values" :value="value._id" :selected="value.name === modelValue">{{ value.name }}</option>
         </select>
     </label>
 </template>

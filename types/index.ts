@@ -4,14 +4,14 @@ interface Password {
     account_name: string;
     category: string;
     website: string;
-    email: string;
+    username: string;
     password: string;
     image: string;
     createdAt: string;
 }
 
 interface Category {
-    id: string;
+    _id: string;
     name: string;
 }
 

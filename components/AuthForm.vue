@@ -52,10 +52,7 @@ const submitForm = async () => {
             ? useEvent("showToast", response)
             : navigateTo("/dashboard");
     } catch (error: any) {
-        if (error.response?.status >= 400 && error.response?.status < 500) {
-            return useEvent("showToast", error.response.data.message);
-        }
-        useEvent("showToast", error.response.message);
+        useEvent("showToast", error?.response?.data?.message || "An error occurred while processing your request!");
     }
 };
 </script>
@@ -78,7 +75,7 @@ const submitForm = async () => {
             <BaseText v-if="route.name === 'signup'" v-model="cpassword" label="Confirm Password" for="cpassword"
                 type="password" placeholder="********************" />
 
-            <button type="submit" class="btn w-100 text-center">
+            <button class="btn w-100 text-center">
                 {{ route.name === "signup" ? "Sign Up" : "Login" }}
                 <IconArrow direction="right" />
             </button>
