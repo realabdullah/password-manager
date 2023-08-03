@@ -39,7 +39,7 @@ const submitForm = async () => {
 
             const response = await $axios.post("register", registerObj);
             if (!response.data.success) {
-                return useEvent("showToast", response.message);
+                return useEvent("showToast", response.data.message);
             }
 
             useEvent("showToast", "Account created successfully");
@@ -54,7 +54,7 @@ const submitForm = async () => {
         const response = await logIn(data);
         typeof response === "string"
             ? useEvent("showToast", response)
-            : navigateTo("/dashboard");
+            : navigateTo({ name: "dashboard" }, { replace: true });
     } catch (error: any) {
         useEvent("showToast", error?.response?.data?.message || "An error occurred while processing your request!");
     }

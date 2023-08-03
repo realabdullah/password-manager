@@ -58,8 +58,8 @@ const saveChanges = async () => {
 
 if (props.mode === "edit") {
     website.value = props.passwordToEdit.website;
-    accountName.value = props.passwordToEdit.accountName;
-    category.value = props.passwordToEdit.category;
+    accountName.value = props.passwordToEdit.account_name;
+    category.value = categories.value.find((cat: any) => cat._id === props.passwordToEdit.category)?.name || "";
     email.value = props.passwordToEdit.username;
     password.value = props.passwordToEdit.password;
 }

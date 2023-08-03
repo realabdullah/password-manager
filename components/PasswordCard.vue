@@ -48,7 +48,7 @@ const revealPassword = computed(() =>
             <div class="account d-flex align-items-center justify-content-space-between"
                 @click="toggleAccount(password._id)">
                 <div class="account__info d-flex align-items-center">
-                    <img :src="password.image" :alt="password.account_name" />
+                    <img :src="`https://ui-avatars.com/api/?name=${password.account_name}`" :alt="password.account_name" />
                     <h4>
                         {{ password.account_name }}
                         <span>- {{ password.username }}</span>
