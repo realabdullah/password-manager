@@ -6,6 +6,7 @@ definePageMeta({
 
 const { $axios } = useNuxtApp();
 
+const isLoading = ref(false);
 const email = ref("");
 const otp = ref("");
 const stage = ref("forget-password");
@@ -51,8 +52,11 @@ const confirmToken = async () => {
 
 const handleFormSubmission = async () => {
     try {
+        isLoading.value = true;
         stage.value === "forget-password" ? await forgotPassword() : await confirmToken();
+        isLoading.value = false;
     } catch (error) {
+        isLoading.value = false;
         useEvent("showToast", "An error occurred while processing your request!");
     }
 };
@@ -82,7 +86,11 @@ onMounted(() => {
                         OTP</button></p>
             </div>
 
-            <button type="submit" class="btn w-100 text-center">
+            <button v-if="isLoading" type="button" class="btn w-100 text-center" disabled>
+                <IconLoading />
+            </button>
+
+            <button v-else type="submit" class="btn w-100 text-center">
                 {{ stage === "forget-password" ? "Request OTP" : "Confirm OTP" }}
                 <IconArrow direction="right" />
             </button>
