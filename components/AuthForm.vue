@@ -11,6 +11,7 @@ const pageText = computed(() => {
     }
 });
 
+const isLoading = ref(false);
 const name = ref("");
 const username = ref("");
 const email = ref("");
@@ -31,6 +32,7 @@ const submitForm = async () => {
             return;
         }
 
+        isLoading.value = true;
         if (route.name === "signup") {
             if (password.value !== cpassword.value) {
                 useEvent("showToast", "Passwords do not match");
@@ -52,11 +54,13 @@ const submitForm = async () => {
         };
 
         const response = await logIn(data);
+        isLoading.value = false;
         // temporal fix
         typeof response === "string"
             ? useEvent("showToast", response)
             : window.location.reload();
     } catch (error: any) {
+        isLoading.value = false;
         useEvent("showToast", error?.response?.data?.message || "An error occurred while processing your request!");
     }
 };
@@ -80,9 +84,13 @@ const submitForm = async () => {
             <BaseText v-if="route.name === 'signup'" v-model="cpassword" label="Confirm Password" for="cpassword"
                 type="password" placeholder="********************" />
 
-            <button class="btn w-100 text-center">
+            <button class="btn w-100 text-center" v-if="!isLoading">
                 {{ route.name === "signup" ? "Sign Up" : "Login" }}
                 <IconArrow direction="right" />
+            </button>
+
+            <button v-else class="btn w-100 text-center" disabled>
+                <IconLoading />
             </button>
         </form>
         <p v-if="route.name === 'signup'" class="forgot-password d-flex align-items-center justify-content-center">
