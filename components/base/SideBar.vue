@@ -18,7 +18,7 @@ const { name, showAddCategory, addNewCategory } = useCategory();
                 <button class="w-100 d-flex align-items-center justify-content-space-between">
                     <span class="category weight-600">{{ category.name }}</span>
                     <span class="count d-flex align-items-center justify-content-center">
-                        {{ categoryCount(category.name) }}
+                        {{ categoryCount(category._id) }}
                     </span>
                 </button>
             </li>

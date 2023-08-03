@@ -8,9 +8,9 @@ export const useStore = defineStore("store", () => {
 	const categories = ref<Category[]>([]);
 	const passwords = ref<Password[]>([]);
 
-	const categoryCount = (title: string) => {
+	const categoryCount = (id: string) => {
 		if (passwords.value.length > 0) {
-			return passwords.value.filter(password => password.category === title).length;
+			return passwords.value.filter(password => password.category === id).length;
 		}
 
 		return 0;
