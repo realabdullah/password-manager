@@ -37,7 +37,7 @@ export default defineNuxtConfig({
 			baseUrl: process.env.BASE_URL,
 		},
 	},
-	modules: ["@pinia/nuxt"],
+	modules: ["@pinia/nuxt", "@pinia-plugin-persistedstate/nuxt"],
 	imports: {
 		dirs: ["store"],
 	},

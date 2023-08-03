@@ -125,4 +125,6 @@ export const useStore = defineStore("store", () => {
 		deletePassword,
 		updatePassword,
 	};
+}, {
+    persist: true
 });
