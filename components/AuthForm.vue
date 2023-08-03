@@ -52,9 +52,10 @@ const submitForm = async () => {
         };
 
         const response = await logIn(data);
+        // temporal fix
         typeof response === "string"
             ? useEvent("showToast", response)
-            : navigateTo({ name: "dashboard" }, { replace: true });
+            : window.location.reload();
     } catch (error: any) {
         useEvent("showToast", error?.response?.data?.message || "An error occurred while processing your request!");
     }
