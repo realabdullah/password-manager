@@ -36,6 +36,7 @@ const submitForm = async () => {
         if (route.name === "signup") {
             if (password.value !== cpassword.value) {
                 useEvent("showError", "Passwords do not match");
+                isLoading.value = true;
                 return;
             }
 
