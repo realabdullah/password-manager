@@ -24,7 +24,9 @@ export const useCategory = () => {
 			showAddCategory.value = false;
 			await getAllCategories();
 			useEvent("showToast", "Category added successfully!");
-		} catch (error) {}
+		} catch (error) {
+            useEvent("showError", "Something went wrong!");
+        }
 	};
 
 	return {

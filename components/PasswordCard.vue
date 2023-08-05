@@ -22,7 +22,7 @@ const copyToClipboard = async (text: string) => {
         await navigator.clipboard.writeText(text);
         useEvent("showToast", "Copied to clipboard!");
     } catch {
-        useEvent("showToast", "Failed to copy to clipboard!");
+        useEvent("showError", "Failed to copy to clipboard!");
     }
 };
 

@@ -28,20 +28,20 @@ const registerObj: RegisterData = reactive({
 const submitForm = async () => {
     try {
         if (!email.value || !password.value) {
-            useEvent("showToast", "Please fill in all fields");
+            useEvent("showError", "Please fill in all fields");
             return;
         }
 
         isLoading.value = true;
         if (route.name === "signup") {
             if (password.value !== cpassword.value) {
-                useEvent("showToast", "Passwords do not match");
+                useEvent("showError", "Passwords do not match");
                 return;
             }
 
             const response = await $axios.post("register", registerObj);
             if (!response.data.success) {
-                return useEvent("showToast", response.data.message);
+                return useEvent("showError", response.data.message);
             }
 
             useEvent("showToast", "Account created successfully");
@@ -57,11 +57,11 @@ const submitForm = async () => {
         isLoading.value = false;
         // temporal fix
         typeof response === "string"
-            ? useEvent("showToast", response)
+            ? useEvent("showError", response)
             : window.location.reload();
     } catch (error: any) {
         isLoading.value = false;
-        useEvent("showToast", error?.response?.data?.message || "An error occurred while processing your request!");
+        useEvent("showError", error?.response?.data?.message || "An error occurred while processing your request!");
     }
 };
 </script>

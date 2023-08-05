@@ -29,7 +29,7 @@ const otpInput = () => {
 };
 
 const forgotPassword = async () => {
-    if (!email.value) return useEvent("showToast", "Email is required!");
+    if (!email.value) return useEvent("showError", "Email is required!");
     const response = await $axios.post("forgot-password", {
         email: email.value,
     });
@@ -57,7 +57,7 @@ const handleFormSubmission = async () => {
         isLoading.value = false;
     } catch (error) {
         isLoading.value = false;
-        useEvent("showToast", "An error occurred while processing your request!");
+        useEvent("showError", "An error occurred while processing your request!");
     }
 };
 

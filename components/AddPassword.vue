@@ -23,7 +23,7 @@ const checkAllFields = () => {
         accountName.value === "" ||
         category.value === ""
     ) {
-        useEvent("showToast", "Please fill in all fields!");
+        useEvent("showError", "Please fill in all fields!");
         return false;
     }
     return true;
@@ -52,7 +52,7 @@ const saveChanges = async () => {
         useEvent("showToast", `Password successfully ${props.mode === "edit" ? "edited" : "added"}!`);
         emits("close");
     } catch {
-        useEvent("showToast", "Something went wrong!");
+        useEvent("showError", "Something went wrong!");
     }
 };
 

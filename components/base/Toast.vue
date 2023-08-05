@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 defineProps<{
+    type: string;
     message: string;
 }>();
 </script>
 
 <template>
-    <div class="toast d-flex align-items-center position-fixed">
-        <IconDone />
+    <div class="toast d-flex align-items-center position-fixed" :style="{ backgroundColor: type === 'error' ? '#e2454a' : '#3F00F2' }">
+        <IconStatus :type="type" />
         <span class="weight-600">{{ message }}</span>
     </div>
 </template>
@@ -16,7 +17,6 @@ defineProps<{
     bottom: 2rem;
     left: 2rem;
     padding: 1rem 2.4rem;
-    background-color: $col-bluePurple;
     color: $col-white;
     border-radius: 0.8rem;
     box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.1);

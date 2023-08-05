@@ -13,7 +13,7 @@ const removePassword = () => {
         useEvent("showToast", "Password deleted successfully!");
         emits("close");
     } catch {
-        useEvent("showToast", "Failed to delete password!");
+        useEvent("showError", "Failed to delete password!");
     }
 };
 </script>
