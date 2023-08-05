@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 defineEmits(["toggle-add-modal"]);
-const { categories } = storeToRefs(useStore());
+const { categories, search } = storeToRefs(useStore());
 const { categoryCount } = useStore();
 const {
     name,
@@ -15,7 +15,7 @@ const {
 <template>
     <div class="page__actions d-flex align-items-center justify-content-space-between">
         <form>
-            <input type="search" name="search" placeholder="Search" />
+            <input v-model="search" type="search" name="search" placeholder="Search" />
             <label for="search">
                 <IconSearch />
             </label>

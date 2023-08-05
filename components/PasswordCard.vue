@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { passwords } = storeToRefs(useStore());
+const { filteredPasswords } = storeToRefs(useStore());
 
 defineEmits<{
     (event: "toggle-delete-modal", id: string): void;
@@ -35,7 +35,7 @@ const togglePasswordVisibility = (id: string) => {
 
 const revealPassword = computed(() =>
     showPassword.value
-        ? passwords.value.find(
+        ? filteredPasswords.value.find(
             (password: Password) => password._id === selectedPassword.value
         )?.password
         : "*********"
@@ -44,62 +44,69 @@ const revealPassword = computed(() =>
 
 <template>
     <div class="passwords d-flex flex-column w-100">
-        <div v-for="password in passwords" class="passwords__card position-relative">
-            <div class="account d-flex align-items-center justify-content-space-between"
-                @click="toggleAccount(password._id)">
-                <div class="account__info d-flex align-items-center">
-                    <img :src="`https://ui-avatars.com/api/?name=${password.account_name}`" :alt="password.account_name" />
-                    <h4>
-                        {{ password.account_name }}
-                        <span>- {{ password.username }}</span>
-                    </h4>
-                </div>
-                <button class="account__toggle">
-                    <IconCaret :direction="accountOpened && selectedPassword === password._id ? 'up' : 'down'
-                        " />
-                </button>
-            </div>
-
-            <!-- account password info -->
-            <div v-show="accountOpened && selectedPassword === password._id" class="passwords__card-body">
-                <button class="edit d-flex align-items-center justify-content-center weight-400"
-                    @click="$emit('toggle-edit-modal', password)">
-                    Edit
-                </button>
-
-                <ul class="passwords__card-body-content w-100 d-flex flex-column">
-                    <div class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between">
-                        <span class="weight-500">Email: {{ password.username }}</span>
-                        <button @click="copyToClipboard(password.username)">
-                            <IconCopy />
-                        </button>
+        <template v-if="filteredPasswords.length > 0">
+            <div v-for="password in filteredPasswords" class="passwords__card position-relative">
+                <div class="account d-flex align-items-center justify-content-space-between"
+                    @click="toggleAccount(password._id)">
+                    <div class="account__info d-flex align-items-center">
+                        <img :src="`https://ui-avatars.com/api/?name=${password.account_name}`"
+                            :alt="password.account_name" />
+                        <h4>
+                            {{ password.account_name }}
+                            <span>- {{ password.username }}</span>
+                        </h4>
                     </div>
+                    <button class="account__toggle">
+                        <IconCaret :direction="accountOpened && selectedPassword === password._id ? 'up' : 'down'
+                            " />
+                    </button>
+                </div>
 
-                    <div class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between">
-                        <div class="d-flex align-items-center" style="gap: 1rem">
-                            <span class="weight-500">Password: {{ revealPassword }}</span>
-                            <button @click="togglePasswordVisibility(password._id)">
-                                <IconVisibility :visibility="showPassword ? 'hidden' : 'show'" />
+                <!-- account password info -->
+                <div v-show="accountOpened && selectedPassword === password._id" class="passwords__card-body">
+                    <button class="edit d-flex align-items-center justify-content-center weight-400"
+                        @click="$emit('toggle-edit-modal', password)">
+                        Edit
+                    </button>
+
+                    <ul class="passwords__card-body-content w-100 d-flex flex-column">
+                        <div
+                            class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between">
+                            <span class="weight-500">Email: {{ password.username }}</span>
+                            <button @click="copyToClipboard(password.username)">
+                                <IconCopy />
                             </button>
                         </div>
-                        <button @click="copyToClipboard(password.password)">
-                            <IconCopy />
-                        </button>
-                    </div>
 
-                    <a :href="password.website" target="_blank"
-                        class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between">
-                        <span class="weight-500">Website: {{ password.website }}</span>
-                        <IconArrow direction="up" />
-                    </a>
-                </ul>
+                        <div
+                            class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between">
+                            <div class="d-flex align-items-center" style="gap: 1rem">
+                                <span class="weight-500">Password: {{ revealPassword }}</span>
+                                <button @click="togglePasswordVisibility(password._id)">
+                                    <IconVisibility :visibility="showPassword ? 'hidden' : 'show'" />
+                                </button>
+                            </div>
+                            <button @click="copyToClipboard(password.password)">
+                                <IconCopy />
+                            </button>
+                        </div>
+
+                        <a :href="password.website" target="_blank"
+                            class="passwords__card-body-content-item d-flex align-items-center justify-content-space-between">
+                            <span class="weight-500">Website: {{ password.website }}</span>
+                            <IconArrow direction="up" />
+                        </a>
+                    </ul>
+                </div>
+
+                <!-- remove password -->
+                <button class="position-absolute remove" @click="$emit('toggle-delete-modal', password._id)">
+                    <IconRemove />
+                </button>
             </div>
+        </template>
 
-            <!-- remove password -->
-            <button class="position-absolute remove" @click="$emit('toggle-delete-modal', password._id)">
-                <IconRemove />
-            </button>
-        </div>
+        <h3 v-else>No Passwords!</h3>
     </div>
 </template>
 
@@ -178,5 +185,4 @@ const revealPassword = computed(() =>
 .remove {
     right: -3rem;
     top: 1.5rem;
-}
-</style>
+}</style>

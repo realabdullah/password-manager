@@ -7,6 +7,14 @@ export const useStore = defineStore("store", () => {
 	const user = ref<User | null>(null);
 	const categories = ref<Category[]>([]);
 	const passwords = ref<Password[]>([]);
+    const search = ref("");
+
+    const filteredPasswords = computed(() => {
+        if (!search.value) return passwords.value;
+        return passwords.value.filter((password) => {
+            return password.account_name.toLowerCase().includes(search.value.toLowerCase());
+        });
+    });
 
 	const categoryCount = (id: string) => {
 		if (passwords.value.length > 0) {
@@ -110,9 +118,11 @@ export const useStore = defineStore("store", () => {
 	};
 
 	return {
+        search,
 		user,
 		userToken,
 		categories,
+        filteredPasswords,
 		passwords,
 		logIn,
 		logOut,
