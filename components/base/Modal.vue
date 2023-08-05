@@ -46,6 +46,7 @@ defineEmits(["close"]);
         border-radius: 2rem;
         padding: 6rem;
         overflow-y: auto;
+        animation: scale-up-center 0.4s cubic-bezier(0.215, 0.610, 0.355, 1.000) ;
 
         @media screen and (max-width: 768px) {
             max-width: 100%;
@@ -62,5 +63,14 @@ defineEmits(["close"]);
             padding: 4rem;
         }
     }
+}
+
+@keyframes scale-up-center {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 </style>

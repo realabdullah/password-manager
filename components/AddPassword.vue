@@ -43,7 +43,7 @@ const saveChanges = async () => {
         };
 
         if (props.mode === "edit") {
-            const status = await updatePassword(props.passwordToEdit._id, props.passwordToEdit.website);
+            const status = await updatePassword(props.passwordToEdit._id, passwordObj.website);
             if (!status) throw new Error();
         } else {
             const status = await addPassword(passwordObj);
