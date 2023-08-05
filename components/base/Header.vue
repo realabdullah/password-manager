@@ -14,10 +14,6 @@ const showMenu = ref(false);
         </button>
 
         <div v-show="showMenu" class="dropdown position-absolute d-flex flex-column align-items-start">
-            <button class="d-flex align-items-center">
-                <IconDropdown type="password" />
-                Change Password
-            </button>
             <button class="d-flex align-items-center" @click="logOut">
                 <IconDropdown type="logout" />
                 Sign Out
