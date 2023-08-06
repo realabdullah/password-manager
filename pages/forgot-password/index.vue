@@ -15,8 +15,8 @@ const forgotPassword = async () => {
         const response = await $axios.post("forgot-password", {
             email: email.value,
         });
-        if (!response.data.success) throw new Error();
-        useEvent("showToast", "OTP sent to your email!");
+        if (!response.data.success) throw new Error(response.data.message);
+        useEvent("showToast", "A reset password link has been sent to your email!");
     } catch {
         useEvent("showError", "An error occurred while processing your request!");
     }
