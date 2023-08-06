@@ -1,6 +1,27 @@
 <script lang="ts" setup>
+const { $axios } = useNuxtApp();
+
 const { user, logOut } = useStore();
 const showMenu = ref(false);
+const isGeneratingPassword = ref(false);
+
+const generatePassword = async () => {
+    try {
+        isGeneratingPassword.value = true;
+        const response = await $axios.post("generate-password");
+        if (!response.data.success) {
+            throw new Error(response.data.message);
+        }
+
+        const { password } = response.data.data;
+        isGeneratingPassword.value = false;
+        await navigator.clipboard.writeText(password);
+        useEvent("showToast", "Generated password copied to clipboard!");
+    } catch {
+        isGeneratingPassword.value = false;
+        useEvent("showError", "Failed to generate password!");
+    }
+};
 </script>
 
 <template>
@@ -14,6 +35,10 @@ const showMenu = ref(false);
         </button>
 
         <div v-show="showMenu" class="dropdown position-absolute d-flex flex-column align-items-start">
+            <button class="d-flex align-items-center" @click="generatePassword">
+                <IconDropdown type="password" />
+                {{ isGeneratingPassword ? "Generating..." : "Generate Password" }}
+            </button>
             <button class="d-flex align-items-center" @click="logOut">
                 <IconDropdown type="logout" />
                 Sign Out
@@ -89,6 +114,7 @@ header {
             gap: 1.2rem;
             color: $col-black;
             transition: color 0.3s ease-in-out;
+            white-space: nowrap;
 
             &:hover {
                 color: $col-fadedBlack;
