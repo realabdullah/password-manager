@@ -38,7 +38,7 @@ const {
                             {{ category.name }}
                         </span>
                         <span class="count d-flex align-items-center justify-content-center">
-                            {{ categoryCount(category.name) }}
+                            {{ categoryCount(category._id) }}
                         </span>
                     </button>
 

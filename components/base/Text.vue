@@ -11,14 +11,29 @@ interface InputEmits {
     (event: "update:modelValue", value: string): void;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 defineEmits<InputEmits>();
+
+const showPassword = ref(false);
+
+// toggle password visibility
+const togglePasswordVisibility = () => {
+    const input = document.getElementById(props.for) as HTMLInputElement;
+    if (input.type === "password") {
+        input.type = "text";
+        showPassword.value = true;
+    } else {
+        input.type = "password";
+        showPassword.value = false;
+    }
+};
 </script>
 
 <template>
-    <label :for="for" class="w-100 d-flex flex-column">
+    <label :for="for" class="w-100 d-flex flex-column position-relative">
         <span class="weight-400">{{ label }}</span>
         <input :value="modelValue" :type="type" :id="for" :placeholder="placeholder" @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)" />
+        <IconVisibility v-if="type === 'password'" :visibility="showPassword ? 'show' : 'hide'" class="visibility position-absolute" @click="togglePasswordVisibility" />
     </label>
 </template>
 
@@ -43,6 +58,12 @@ label {
         &:focus {
             border-color: $col-bluePurple;
         }
+    }
+
+    .visibility {
+        top: 3.7rem;
+        right: 2rem;
+        cursor: pointer;
     }
 }
 </style>

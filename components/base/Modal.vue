@@ -57,6 +57,7 @@ defineEmits(["close"]);
             transform: translate(0, 0);
             padding: 3rem;
             border-radius: 2rem 2rem 0 0;
+            animation: mobile-scale-up-center 0.4s cubic-bezier(0.215, 0.610, 0.355, 1.000) ;
         }
 
         @media screen and (min-width: 769px) and (max-width: 950px) {
@@ -71,6 +72,15 @@ defineEmits(["close"]);
   }
   100% {
     transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes mobile-scale-up-center {
+  0% {
+    transform: translate(0, 0) scale(0);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
   }
 }
 </style>
