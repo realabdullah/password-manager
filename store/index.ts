@@ -85,23 +85,15 @@ export const useStore = defineStore("store", () => {
 	};
 
 	const getAllCategories = async () => {
-		try {
-            const response = await $axios.get("categories");
-            if (!response.data.success) throw new Error(response.data.message);
-            categories.value = response.data.data.data;
-        } catch (error) {
-            console.log("category error", error);
-        }
+		const response = await $axios.get("categories");
+		if (!response.data.success) return;
+		categories.value = response.data.data.data;
 	};
 
 	const getAllPasswords = async () => {
-		try {
-            const response = await $axios.get("passwords");
-            if (!response.data.success) return;
-            passwords.value = response.data.data.data;
-        } catch (error) {
-            console.log("passowrd error", error);
-        }
+		const response = await $axios.get("passwords");
+		if (!response.data.success) return;
+		passwords.value = response.data.data.data;
 	};
 
 	const deletePassword = async (id: string) => {
