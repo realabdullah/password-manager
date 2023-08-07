@@ -1,9 +1,15 @@
 <script setup lang="ts">
+const { logOut } = useStore();
+
 const props = defineProps({
     error: Object
 })
 
-const handleError = () => clearError({ redirect: '/' });
+const handleError = async () => {
+    await logOut();
+    clearError({ redirect: '/' });
+}
+
 const errorTitle = computed(() => props.error?.statusCode === 404 ? "404: The Lost Page Chronicles" : "500: The Gremlins Are At It Again");
 const errorMessage = computed(() => props.error?.statusCode === 404 ? "Oops! Our cyber explorers are searching high and low for the missing page. While they work their magic, why not sharpen your virtual treasure-hunting skills?" : "Uh-oh, server gremlins are causing a ruckus. Our tech team is on the case, restoring order and digital harmony. Consider it a brief virtual intermission.");
 </script>
